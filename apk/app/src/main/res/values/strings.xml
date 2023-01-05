@@ -190,4 +190,6 @@
     <string name="song_name3" priority="translator">水中月</string>
     <string name="song_lyrics" priority="translator">Input Lyrics</string>
     <string name="song_lyrics_null" priority="translator">"Lyrics is null, please input lyrics"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
