@@ -76,7 +76,7 @@ public class StreamApiActivity extends AppCompatActivity
     private static final int TYPE_SOUND_FILED = 4;
     private static final int TYPE_EQ = 5;
     private static final int TYPE_CHANGE_SOUND_COMMON = 6;
-    private static final int TYPE_VOICE_BEAUTIFIER= 7;
+    private static final int TYPE_VOICE_BEAUTIFIER = 7;
     private int currentType = TYPE_NONE;
 
     @SuppressLint("SdCardPath")
@@ -103,6 +103,11 @@ public class StreamApiActivity extends AppCompatActivity
     private HAEEqualizerStream haeEqualizerStream;
 
     private ChangeVoiceOption changeVoiceOption;
+
+
+
+
+
 
     private RadioGroup rgSoundSex;
     private RadioGroup rgSoundPart;
@@ -231,34 +236,34 @@ public class StreamApiActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back :
+            case R.id.back:
                 onBackPressed();
                 break;
-            case R.id.begin_change :
+            case R.id.begin_change:
                 changeVoice();
                 break;
-            case R.id.begin_change_common :
+            case R.id.begin_change_common:
                 changeVoiceCommon();
                 break;
-            case R.id.begin_beautifer_common :
+            case R.id.begin_beautifer_common:
                 voiceBeautifier();
                 break;
-            case R.id.begin_reduction :
+            case R.id.begin_reduction:
                 reduction();
                 break;
-            case R.id.begin_env :
+            case R.id.begin_env:
                 changeEnv();
                 break;
-            case R.id.begin_sound_ground :
+            case R.id.begin_sound_ground:
                 changeSoundGround();
                 break;
-            case R.id.begin_eq :
+            case R.id.begin_eq:
                 changeEq();
                 break;
-            case R.id.begin_play :
+            case R.id.begin_play:
                 beginDealPcmFile(TYPE_NONE);
                 break;
-            default :
+            default:
                 break;
         }
     }
@@ -381,7 +386,7 @@ public class StreamApiActivity extends AppCompatActivity
                     } else if (currentType == TYPE_CHANGE_SOUND_COMMON) {
                         resultByte = haeChangeVoiceStreamCommon.applyPcmData(buffer);
                         playPcm(resultByte);
-                    }  else if (currentType == TYPE_VOICE_BEAUTIFIER) {
+                    } else if (currentType == TYPE_VOICE_BEAUTIFIER) {
                         resultByte = haeVoiceBeautifierStream.applyPcmData(buffer);
                         playPcm(resultByte);
                     } else if (currentType == TYPE_REDUCTION) {
@@ -400,23 +405,23 @@ public class StreamApiActivity extends AppCompatActivity
                         playPcm(buffer);
                     }
 
-                            // Save to File
-                            if (saveToFile && resultByte != null) {
-                                saveToFileStream.write(resultByte);
-                            }
-                        }
+                    // Save to File
+                    if (saveToFile && resultByte != null) {
+                        saveToFileStream.write(resultByte);
+                    }
+                }
+            } catch (IOException e) {
+                SmartLog.e(TAG, e.getMessage());
+            } finally {
+                releaseAllAbility();
+                isPlaying = false;
+                if (fileInputStream != null) {
+                    try {
+                        fileInputStream.close();
                     } catch (IOException e) {
                         SmartLog.e(TAG, e.getMessage());
-                    } finally {
-                        releaseAllAbility();
-                        isPlaying = false;
-                        if (fileInputStream != null) {
-                            try {
-                                fileInputStream.close();
-                            } catch (IOException e) {
-                                SmartLog.e(TAG, e.getMessage());
-                            }
-                        }
+                    }
+                }
 
                 if (saveToFileStream != null) {
                     try {
@@ -475,143 +480,143 @@ public class StreamApiActivity extends AppCompatActivity
             case R.id.rb_normal_beautifer:
                 haeVoiceBeautifierStream.setVoiceBeautifierType(VoiceBeautifierType.NORMAL);
                 break;
-            case R.id.rb_uncle :
+            case R.id.rb_uncle:
                 currentVoiceType = ChangeVoiceOption.VoiceType.SEASONED.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.SEASONED);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_lori :
+            case R.id.rb_lori:
                 currentVoiceType = ChangeVoiceOption.VoiceType.CUTE.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.CUTE);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_female :
+            case R.id.rb_female:
                 currentVoiceType = ChangeVoiceOption.VoiceType.FEMALE.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.FEMALE);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_male :
+            case R.id.rb_male:
                 currentVoiceType = ChangeVoiceOption.VoiceType.MALE.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.MALE);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_monsters :
+            case R.id.rb_monsters:
                 currentVoiceType = ChangeVoiceOption.VoiceType.MONSTER.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.MONSTER);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_robots :
+            case R.id.rb_robots:
                 currentVoiceType = ChangeVoiceOption.VoiceType.ROBOTS.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.ROBOTS);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_cartoon :
+            case R.id.rb_cartoon:
                 currentVoiceType = ChangeVoiceOption.VoiceType.CARTOON.ordinal();
                 changeVoiceOption.setVoiceType(ChangeVoiceOption.VoiceType.CARTOON);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_uncle_common :
+            case R.id.rb_uncle_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.SEASONED);
                 break;
-            case R.id.rb_lori_common :
+            case R.id.rb_lori_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.CUTE);
                 break;
-            case R.id.rb_female_common :
+            case R.id.rb_female_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.FEMALE);
                 break;
-            case R.id.rb_male_common :
+            case R.id.rb_male_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.MALE);
                 break;
-            case R.id.rb_monsters_common :
+            case R.id.rb_monsters_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.MONSTER);
                 break;
-            case R.id.rb_trill_common :
+            case R.id.rb_trill_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.TRILL);
                 break;
-            case R.id.rb_normal_common :
+            case R.id.rb_normal_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.NORMAL);
                 break;
-            case R.id.rb_cyberpunk_common :
+            case R.id.rb_cyberpunk_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.CYBERPUNK);
                 break;
-            case R.id.rb_war_common :
+            case R.id.rb_war_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.WAR);
                 break;
-            case R.id.rb_mix_common :
+            case R.id.rb_mix_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.MIX);
                 break;
-            case R.id.rb_synth_common :
+            case R.id.rb_synth_common:
                 haeChangeVoiceStreamCommon.changeVoiceType(VoiceTypeCommon.SYNTH);
                 break;
-            case R.id.rb_gb :
+            case R.id.rb_gb:
                 haeSceneStream.setEnvironmentType(AudioParameters.ENVIRONMENT_TYPE_BROADCAST);
                 break;
-            case R.id.rb_tel :
+            case R.id.rb_tel:
                 haeSceneStream.setEnvironmentType(AudioParameters.ENVIRONMENT_TYPE_EARPIECE);
                 break;
-            case R.id.rb_sx :
+            case R.id.rb_sx:
                 haeSceneStream.setEnvironmentType(AudioParameters.ENVIRONMENT_TYPE_UNDERWATER);
                 break;
-            case R.id.rb_cd :
+            case R.id.rb_cd:
                 haeSceneStream.setEnvironmentType(AudioParameters.ENVIRONMENT_TYPE_GRAMOPHONE);
                 break;
-            case R.id.rb_sound_0 :
+            case R.id.rb_sound_0:
                 haeSoundFieldStream.setSoundType(AudioParameters.SOUND_FIELD_WIDE);
                 break;
-            case R.id.rb_sound_1 :
+            case R.id.rb_sound_1:
                 haeSoundFieldStream.setSoundType(AudioParameters.SOUND_FIELD_FRONT_FACING);
                 break;
-            case R.id.rb_sound_2 :
+            case R.id.rb_sound_2:
                 haeSoundFieldStream.setSoundType(AudioParameters.SOUND_FIELD_NEAR);
                 break;
-            case R.id.rb_sound_3 :
+            case R.id.rb_sound_3:
                 haeSoundFieldStream.setSoundType(AudioParameters.SOUND_FIELD_GRAND);
                 break;
-            case R.id.rb_pops :
+            case R.id.rb_pops:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_POP_VALUE);
                 break;
-            case R.id.rb_classic :
+            case R.id.rb_classic:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_CLASSICAL_VALUE);
                 break;
-            case R.id.rb_jazz :
+            case R.id.rb_jazz:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_JAZZ_VALUE);
                 break;
-            case R.id.rb_rock :
+            case R.id.rb_rock:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_ROCK_VALUE);
                 break;
-            case R.id.rb_rb :
+            case R.id.rb_rb:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_RB_VALUE);
                 break;
-            case R.id.rb_ballads :
+            case R.id.rb_ballads:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_BALLADS_VALUE);
                 break;
-            case R.id.rb_dance_music :
+            case R.id.rb_dance_music:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_DANCE_MUSIC_VALUE);
                 break;
-            case R.id.rb_chinese_style :
+            case R.id.rb_chinese_style:
                 haeEqualizerStream.setEqParams(AudioParameters.EQUALIZER_CHINESE_STYLE_VALUE);
                 break;
-            case R.id.rb_man :
+            case R.id.rb_man:
                 changeVoiceOption.setSpeakerSex(ChangeVoiceOption.SpeakerSex.MALE);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_woman :
+            case R.id.rb_woman:
                 changeVoiceOption.setSpeakerSex(ChangeVoiceOption.SpeakerSex.FEMALE);
                 haeChangeVoiceStream.changeVoiceOption(changeVoiceOption);
                 resetpitch();
                 break;
-            case R.id.rb_center :
+            case R.id.rb_center:
                 changeVoiceOption.setVocalPart(ChangeVoiceOption.VocalPart.MIDDLE);
                 break;
-            default :
+            default:
                 break;
         }
     }
@@ -680,6 +685,7 @@ public class StreamApiActivity extends AppCompatActivity
         int pitchProgress = pitchToProgress(getDefaultPitch());
         mSbTones.setProgress(pitchProgress);
     }
+
     private int pitchToProgress(float pitch) {
         return (int) (pitch * 20 - 6);
     }

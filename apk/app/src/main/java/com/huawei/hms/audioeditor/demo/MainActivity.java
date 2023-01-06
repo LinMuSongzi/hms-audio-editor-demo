@@ -324,8 +324,9 @@ public class MainActivity extends AppCompatActivity {
                 requestPermission();
                 break;
             case R.string.material_tag:
-                currentPermissionType = PERMISSION_MATERIAL;
-                intentToActivity = new Intent(mContext, MaterialsActivity.class);
+                startActivity(new Intent(this,ExoPlaytestActivity2.class));
+//                currentPermissionType = PERMISSION_MATERIAL;
+//                intentToActivity = new Intent(mContext, MaterialsActivity.class);
                 requestPermission();
                 break;
             case R.string.space_render:
