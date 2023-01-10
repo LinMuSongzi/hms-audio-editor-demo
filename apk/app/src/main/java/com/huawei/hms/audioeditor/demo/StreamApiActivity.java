@@ -10,6 +10,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,7 +88,7 @@ public class StreamApiActivity extends AppCompatActivity
     private static final int CHANNEL_COUNT = 2;
     private static final int SAMPLE_RATE = 44100;
     private static final int BUFFER_SIZE = 7056;
-    private static final int CHANGE_VOICE_BUFFER_SIZE = 7056;
+    private static final int CHANGE_VOICE_BUFFER_SIZE = 4096;
 
     // Save to File
     private boolean saveToFile = false;
@@ -374,6 +375,7 @@ public class StreamApiActivity extends AppCompatActivity
                 int bufferSize;
                 bufferSize = CHANGE_VOICE_BUFFER_SIZE;
                 byte[] buffer = new byte[bufferSize];
+                Log.i(TAG, "beginDealPcmFile: buffer  = "+buffer.length);
                 byte[] resultByte = null;
                 if (saveToFile) {
                     saveToFileStream = new FileOutputStream(
@@ -400,6 +402,9 @@ public class StreamApiActivity extends AppCompatActivity
                         playPcm(resultByte);
                     } else if (currentType == TYPE_EQ) {
                         resultByte = haeEqualizerStream.applyPcmData(buffer);
+                        if(resultByte!=null) {
+                            Log.i(TAG, "beginDealPcmFile: resultByte  = " + resultByte.length);
+                        }
                         playPcm(resultByte);
                     } else {
                         playPcm(buffer);
