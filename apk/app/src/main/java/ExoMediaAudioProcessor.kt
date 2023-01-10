@@ -86,10 +86,6 @@ class ExoMediaAudioProcessor : BaseAudioProcessor() {
             var bb: ByteArray? = ByteArray(dataMaxSize)
             inputBuffer.get(bb!!)
 
-//            if (kotlin.math.abs(systemTime - System.currentTimeMillis()) > 5_000) {
-//                haeEqualizerStream?.setEqParams(ARRAY_EQ[(Math.random() * ARRAY_EQ.size).toInt()])
-//                systemTime = System.currentTimeMillis()
-//            }
             if (enableEffect) {
                 if (haeEqualizerStreamEnable) {
                     bb = haeEqualizerStream?.applyPcmData(bb)
@@ -103,7 +99,7 @@ class ExoMediaAudioProcessor : BaseAudioProcessor() {
             }
 
             if (bb != null) {
-                Log.i(ExoPlayViewModel.TAG, "queueInput: enableEffect = $enableEffect")
+//                Log.i(ExoPlayViewModel.TAG, "queueInput: enableEffect = $enableEffect")
                 replaceOutputBuffer(bb.size).put(bb).flip()
             }
         }

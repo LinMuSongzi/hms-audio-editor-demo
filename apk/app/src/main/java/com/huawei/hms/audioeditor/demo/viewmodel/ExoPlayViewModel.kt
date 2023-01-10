@@ -2,12 +2,14 @@ package com.huawei.hms.audioeditor.demo.viewmodel
 
 import ExoMediaAudioProcessor
 import android.content.Context
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.audio.*
+import java.io.File
 
 class ExoPlayViewModel() : ViewModel() {
 
@@ -71,7 +73,8 @@ class ExoPlayViewModel() : ViewModel() {
 
     //    private var path = Environment.getExternalStorageDirectory().absolutePath + File.separator + "ad7d1d4edff2167163b7303f0fd9f369.wav"//Environment.getExternalStorageDirectory().absolutePath + File.separator + "千山万水.mp3"
 //    private var path = Environment.getExternalStorageDirectory().absolutePath + File.separator + "千山万水.mp3"
-    private var path = "http://192.168.88.39:8080/wavTest2.wav"
+    private var path = "file:///android_asset/千山万水.mp3"
+//    private var path = "http://192.168.88.39:8080/wavTest2.wav"
 //private var path = Environment.getExternalStorageDirectory().absolutePath + File.separator + "stream.pcm"
 
     fun playMusic(context: Context) {
