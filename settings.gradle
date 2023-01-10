@@ -2,3 +2,4 @@ include 'apk:base_audioeditor'
 include 'apk:app'
 include 'apk:aidubbing_audioeditor'
 rootProject.name = "AudioEditDemo"
+include ':musicplay'
