@@ -4,8 +4,11 @@ import com.example.musicplay.ExoMediaAudioProcessor.Companion.ARRAY_EQ
 import com.example.musicplay.ExoMediaAudioProcessor.Companion.ARRAY_STR_EQ
 import com.example.musicplay.ExoMediaAudioProcessor.Companion.EN_STR_TYPE
 import android.Manifest
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +24,7 @@ import com.example.musicplay.ExoMediaAudioProcessor.Companion.SOUND_STR_FIELD
 import com.example.musicplay.databinding.ActivityExoPlaytest2Binding
 import com.example.musicplay.databinding.ItemEqBinding
 import com.example.musicplay.bean.StreamModeInfo
+import com.example.musicplay.viewmodel.ContextViewModel
 import com.example.musicplay.viewmodel.ExoPlayViewModel
 
 class ExoPlaytestActivity2 : AppCompatActivity() {
@@ -28,6 +32,7 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
     val TAG = "ItemEqBinding"
 
     private val mExoPlayViewModel by viewModels<ExoPlayViewModel>()
+    private val mContextViewModel by viewModels<ContextViewModel>()
     private lateinit var dataBinding: ActivityExoPlaytest2Binding
 
     private var launcher: ActivityResultLauncher<String>? = null
@@ -60,6 +65,14 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_exo_playtest2)//setContentView(R.layout.activity_exo_playtest2)
+
+
+//        CViewmode
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            mContextViewModel.changeItem.value = "asdasd"
+            mContextViewModel.changePosition.value = 0x10
+        },2000)
 
         launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
 

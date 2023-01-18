@@ -95,48 +95,7 @@ class ExoPlayViewModel() : ViewModel() {
                          * 设置SoxAudioProcessor
                          * 处理音频数据
                          */
-                        .setAudioProcessors(arrayOf(mExoMediaAudioProcessor.apply {
-//                            viewModelScope.launch {
-//                                chooseEqualizer.collect {
-//                                    enableEffect = true
-//                                    haeEqualizerStreamEnable = true
-//                                    haeEqualizerStream?.setEqParams(it)
-//                                }
-//                            }
-//                            viewModelScope.launch {
-//                                chooseSceneStream.collect {
-//                                    enableEffect = true
-//                                    hAESceneStreamEnable = true
-//                                    hAESceneStream?.setEnvironmentType(it)
-//                                }
-//                            }
-//                            viewModelScope.launch {
-//                                enable.collect {
-//                                    enableEffect = 1 == it
-//                                    if(!enableEffect) {
-//                                        hAESceneStreamEnable = false
-//                                        haeEqualizerStreamEnable = false
-//                                    }
-//                                }
-//                            }
-//                            viewModelScope.launch {
-//                                enableEqualizer.collect {
-//                                    if(it) {
-//                                        enableEffect = true
-//                                    }
-//                                    haeEqualizerStreamEnable = it
-//                                }
-//                            }
-//
-//                            viewModelScope.launch {
-//                                enableEqualizer.collect {
-//                                    if(it) {
-//                                        enableEffect = true
-//                                    }
-//                                    hAESceneStreamEnable = it
-//                                }
-//                            }
-                        }))
+                        .setAudioProcessors(arrayOf(mExoMediaAudioProcessor))
                         .setOffloadMode(
                             if (enableOffload) DefaultAudioSink.OFFLOAD_MODE_ENABLED_GAPLESS_REQUIRED else DefaultAudioSink.OFFLOAD_MODE_DISABLED
                         )
