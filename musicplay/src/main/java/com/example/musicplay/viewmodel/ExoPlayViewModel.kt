@@ -8,8 +8,11 @@ import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.audio.*
+import com.musongzi.comment.business.itf.IMainIndexBusiness
+import com.musongzi.core.base.vm.CoreViewModel
+import com.musongzi.core.itf.holder.IHolderActivity
 
-class ExoPlayViewModel() : ViewModel() {
+class ExoPlayViewModel : CoreViewModel<IHolderActivity>() {
 
     companion object {
         const val TAG = "ExoPlayViewModel"

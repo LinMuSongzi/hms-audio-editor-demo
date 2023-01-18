@@ -26,6 +26,7 @@ import com.example.musicplay.databinding.ItemEqBinding
 import com.example.musicplay.bean.StreamModeInfo
 import com.example.musicplay.viewmodel.ContextViewModel
 import com.example.musicplay.viewmodel.ExoPlayViewModel
+import com.musongzi.comment.business.itf.IMainIndexBusiness
 
 class ExoPlaytestActivity2 : AppCompatActivity() {
 
@@ -67,7 +68,6 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_exo_playtest2)//setContentView(R.layout.activity_exo_playtest2)
 
 
-//        CViewmode
 
         Handler(Looper.getMainLooper()).postDelayed({
             mContextViewModel.changeItem.value = "asdasd"
@@ -77,6 +77,8 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
         launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
 
             if (it) {
+
+
 
                 mExoPlayViewModel.playMusic(this);
                 runOnUiThread {
