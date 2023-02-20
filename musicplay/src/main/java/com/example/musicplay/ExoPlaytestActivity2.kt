@@ -24,9 +24,10 @@ import com.example.musicplay.ExoMediaAudioProcessor.Companion.SOUND_STR_FIELD
 import com.example.musicplay.databinding.ActivityExoPlaytest2Binding
 import com.example.musicplay.databinding.ItemEqBinding
 import com.example.musicplay.bean.StreamModeInfo
-import com.example.musicplay.business.ObsevableValue
+import com.example.musicplay.business.ObservableValue
 import com.example.musicplay.viewmodel.ContextViewModel
 import com.example.musicplay.viewmodel.ExoPlayViewModel
+import com.example.musicplay.viewmodel.ValuesViewModel
 import com.musongzi.core.ExtensionCoreMethod.toJson
 
 class ExoPlaytestActivity2 : AppCompatActivity() {
@@ -35,6 +36,8 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
 
     private val mExoPlayViewModel by viewModels<ExoPlayViewModel>()
     private val mContextViewModel by viewModels<ContextViewModel>()
+    private val mValuesViewModel by viewModels<ValuesViewModel>()
+
     private lateinit var dataBinding: ActivityExoPlaytest2Binding
 
     private var launcher: ActivityResultLauncher<String>? = null
@@ -64,24 +67,34 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
 //        add(StreamModeInfo("效果", 0, 4))
     }
 
-    val value = ObsevableValue.create<StreamModeInfo>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_exo_playtest2)//setContentView(R.layout.activity_exo_playtest2)
 
-        val obs = object :Observer<StreamModeInfo?>{
+        val obs = object : Observer<StreamModeInfo?> {
             override fun onChanged(it: StreamModeInfo?) {
-                Log.i(ObsevableValue.TAG, "onCreate:回调 value =  " + it?.toJson())
+                Log.i(ObservableValue.TAG, "onCreate:回调 value =  " + it?.toJson())
                 it?.apply {
                     dataBinding.bean = it
                 }
-                value.remove(this)
+                mValuesViewModel.mStreamModeInfo.remove(this)
             }
         }
 
 
-        value.observer(this, observer = obs)
+
+        mValuesViewModel.mStreamModeInfo.observer(this, observerCall = object : ObservableValue.Call<StreamModeInfo> {
+            override fun onRemoveCall(value: StreamModeInfo?) {
+                Log.d(ObservableValue.TAG, "onRemoveCall: ")
+            }
+
+            override fun onAddCall(value: StreamModeInfo?) {
+                Log.d(ObservableValue.TAG, "onAddCall: ")
+            }
+
+        }, observer = obs)
 //        value.getObserverOtherCall(obs)?.onRemoveCall = {
 //            Log.i(ObsevableValue.TAG, "onCreate:移除后的回调 value =  " + it?.toJson())
 //        }
@@ -142,7 +155,7 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
                                     mExoPlayViewModel.enableIndex = 0x100.inv() and info.type
 
                                 }
-                                value.value = info
+                                mValuesViewModel.mStreamModeInfo.value = info
                             }
 
                         }

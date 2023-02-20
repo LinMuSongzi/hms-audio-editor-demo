@@ -8,12 +8,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.musongzi.core.ExtensionCoreMethod.exceptionRun
 
-class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor(
-    v: V? = null, private val flags: L,
+class ObservableValue<V> private constructor(
+    v: V? = null,
     private val addMethodCall: ((Observer<V?>) -> Unit)? = null
 ) {
 
-
+    private val flags: MutableCollection<Observer<V?>> = mutableListOf()
     private var handler = Handler(Looper.getMainLooper())
 
     /**
@@ -73,30 +73,34 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
      * @param isCall 是否绑定立刻回调
      */
     @JvmOverloads
-    fun observer(lifecycleOwner: LifecycleOwner? = null, isCall: Boolean = false, observer: Observer<V?>) {
+    fun observer(lifecycleOwner: LifecycleOwner? = null, isCall: Boolean = false, observerCall: Call<V>? = null, observer: Observer<V?>) {
         if (lifecycleOwner == null) {
-            plusObserver(isCall, ValueObserver(this, observer, isCall))
+            plusObserver(isCall, ValueObserver(this, observer, isCall).apply {
+                this.call = observerCall
+            })
         } else {
-            lifecycleOwner.lifecycle.addObserver(ValueLifecycleObserver(this, observer, isCall))
+            lifecycleOwner.lifecycle.addObserver(ValueLifecycleObserver(this, observer, isCall).apply {
+                this.call = observerCall
+            })
         }
     }
 
-    fun getObserverOtherCall(obs: Observer<V?>): IValueObserver<V>? {
-        val newL = mutableListOf<Observer<V?>>().apply {
-            addAll(flags)
-        }
-        //获取迭代器
-        val i = newL.iterator()
-        while (i.hasNext()) {
-            val observer = i.next()
-            if (observer is BaseValueObserver<*>) {
-                if (observer.myObserver() == obs) {
-                    return observer as? IValueObserver<V>
-                }
-            }
-        }
-        return null;
-    }
+//    fun getObserverOtherCall(obs: Observer<V?>): IValueObserver<V>? {
+//        val newL = mutableListOf<Observer<V?>>().apply {
+//            addAll(flags)
+//        }
+//        //获取迭代器
+//        val i = newL.iterator()
+//        while (i.hasNext()) {
+//            val observer = i.next()
+//            if (observer is BaseValueObserver<*>) {
+//                if (observer.myObserver() == obs) {
+//                    return observer as? IValueObserver<V>
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 
     /**
@@ -111,11 +115,11 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
         val i = newL.iterator()
         while (i.hasNext()) {
             val observer = i.next()
-            if (observer is BaseValueObserver<*>) {
+            if (observer is BaseValueObserver<V>) {
                 if (observer.myObserver() == obs) {
-                    val removeFlag =  flags.remove(observer)
-                    if(removeFlag){
-                        observer.onRemoveCall?.invoke(value as Nothing?)
+                    val removeFlag = flags.remove(observer)
+                    if (removeFlag) {
+                        observer.call?.onRemoveCall(value)
                     }
                     return removeFlag
                 }
@@ -124,9 +128,10 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
         return false;
     }
 
-    private fun plusObserver(isCall: Boolean = false, observer: Observer<V?>) {
+    private fun plusObserver(isCall: Boolean = false, observer: BaseValueObserver<V>) {
         if (addMethodCall == null) {
             flags.add(observer)
+            observer.call?.onAddCall(value)
         } else {
             addMethodCall.invoke(observer)
         }
@@ -138,7 +143,7 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
     }
 
     internal class ValueObserver<V, L : MutableCollection<Observer<V?>>>(
-        observerSimpleSupport: ObsevableValue<V, L>? = null,
+        observerSimpleSupport: ObservableValue<V>? = null,
         observer: Observer<V?>,
         call: Boolean
     ) : ValueLifecycleObserver<V, L>(observerSimpleSupport, observer, call) {
@@ -149,13 +154,13 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
 
     }
 
-    abstract class BaseValueObserver<V> : IValueObserver<V> {
+    abstract class BaseValueObserver<V> : IValueObserver<V>, Observer<V?> {
         abstract fun myObserver(): Any
-        override var onRemoveCall: ((V?) -> Unit)? = null
+        override var call: Call<V>? = null
     }
 
     internal open class ValueLifecycleObserver<V, L : MutableCollection<Observer<V?>>>
-        (private var observerSimpleSupport: ObsevableValue<V, L>? = null, val observer: Observer<V?>, private var call: Boolean) :
+        (private var observerSimpleSupport: ObservableValue<V>? = null, val observer: Observer<V?>, private var isCall: Boolean) :
         DefaultLifecycleObserver,
         Observer<V?>, BaseValueObserver<V>() {
 
@@ -166,9 +171,10 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
 
         override fun myObserver() = observer
 
+
         override fun onCreate(owner: LifecycleOwner) {
             observerSimpleSupport?.apply {
-                plusObserver(call, this@ValueLifecycleObserver)
+                plusObserver(isCall, this@ValueLifecycleObserver)
             }
         }
 
@@ -214,14 +220,20 @@ class ObsevableValue<V, L : MutableCollection<Observer<V?>>> private constructor
 
         const val TAG = "ObsevabkeValue"
 
+        @JvmStatic
         @JvmOverloads
-        fun <V> create(defau: V? = null, l: MutableList<Observer<V?>> = ArrayList(), addMethodCall: ((Observer<V?>) -> Unit)? = null) =
-            ObsevableValue(v = defau, flags = l, addMethodCall)
+        fun <V> create(defau: V? = null, addMethodCall: ((Observer<V?>) -> Unit)? = null) =
+            ObservableValue(v = defau, addMethodCall)
 
     }
 
     interface IValueObserver<V> {
-        var onRemoveCall: ((value:V?) -> Unit)?
+        var call: Call<V>?
+    }
+
+    interface Call<V> {
+        fun onRemoveCall(value: V?)
+        fun onAddCall(value: V?)
     }
 
 }
