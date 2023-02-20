@@ -4,7 +4,6 @@ import com.example.musicplay.ExoMediaAudioProcessor.Companion.ARRAY_EQ
 import com.example.musicplay.ExoMediaAudioProcessor.Companion.ARRAY_STR_EQ
 import com.example.musicplay.ExoMediaAudioProcessor.Companion.EN_STR_TYPE
 import android.Manifest
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplay.ExoMediaAudioProcessor.Companion.EN_TYPE
@@ -24,9 +24,10 @@ import com.example.musicplay.ExoMediaAudioProcessor.Companion.SOUND_STR_FIELD
 import com.example.musicplay.databinding.ActivityExoPlaytest2Binding
 import com.example.musicplay.databinding.ItemEqBinding
 import com.example.musicplay.bean.StreamModeInfo
+import com.example.musicplay.business.ObsevableValue
 import com.example.musicplay.viewmodel.ContextViewModel
 import com.example.musicplay.viewmodel.ExoPlayViewModel
-import com.musongzi.comment.business.itf.IMainIndexBusiness
+import com.musongzi.core.ExtensionCoreMethod.toJson
 
 class ExoPlaytestActivity2 : AppCompatActivity() {
 
@@ -63,21 +64,50 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
 //        add(StreamModeInfo("效果", 0, 4))
     }
 
+    val value = ObsevableValue.create<StreamModeInfo>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_exo_playtest2)//setContentView(R.layout.activity_exo_playtest2)
 
+        val obs = object :Observer<StreamModeInfo?>{
+            override fun onChanged(it: StreamModeInfo?) {
+                Log.i(ObsevableValue.TAG, "onCreate:回调 value =  " + it?.toJson())
+                it?.apply {
+                    dataBinding.bean = it
+                }
+                value.remove(this)
+            }
+        }
+
+
+        value.observer(this, observer = obs)
+//        value.getObserverOtherCall(obs)?.onRemoveCall = {
+//            Log.i(ObsevableValue.TAG, "onCreate:移除后的回调 value =  " + it?.toJson())
+//        }
+//        val handler = Handler(Looper.getMainLooper())
+//        val runnableInfo = object : Runnable {
+//
+//            override fun run() {
+//                mStreamModeInfos.size.let {
+//
+//                    value.value = mStreamModeInfos[(Math.random() * it).toInt()]
+//                    handler.postDelayed(this, 2000)
+//                }
+//            }
+//
+//        }
+//        handler.post(runnableInfo)
 
 
         Handler(Looper.getMainLooper()).postDelayed({
             mContextViewModel.changeItem.value = "asdasd"
             mContextViewModel.changePosition.value = 0x10
-        },2000)
+        }, 2000)
 
         launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
 
             if (it) {
-
 
 
                 mExoPlayViewModel.playMusic(this);
@@ -88,11 +118,11 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
                             DataBindingViewHolder(ItemEqBinding.inflate(layoutInflater, parent, false))
 
                         override fun onBindViewHolder(holder: DataBindingViewHolder<ItemEqBinding>, position: Int) {
-                            Log.i(TAG, "onBindViewHolder: position = $position")
+//                            Log.i(TAG, "onBindViewHolder: position = $position")
                             val info = mStreamModeInfos[position]
                             holder.dataBinding.idTitle.text = info.title
                             holder.dataBinding.root.setOnClickListener {
-                                var index = info.type and 0x100 == 0;
+                                val index = info.type and 0x100 == 0;
                                 if (index) {
                                     when (info.type) {
                                         1 -> {
@@ -108,11 +138,13 @@ class ExoPlaytestActivity2 : AppCompatActivity() {
                                             mExoPlayViewModel.chooseSoundStream = info.values as Int
                                         }
                                     }
-                                }else {
+                                } else {
                                     mExoPlayViewModel.enableIndex = 0x100.inv() and info.type
 
                                 }
+                                value.value = info
                             }
+
                         }
 
                         override fun getItemCount() = mStreamModeInfos.size
